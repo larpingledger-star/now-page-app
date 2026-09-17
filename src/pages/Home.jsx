@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import db from '@/api/base44Client';
 
 import { formatDistanceToNow } from "date-fns";
 import FolioHeader from "@/components/now/FolioHeader";
