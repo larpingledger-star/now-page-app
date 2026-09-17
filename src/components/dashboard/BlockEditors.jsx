@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { Plus, Trash2, Loader2, Upload, X, FileAudio } from "lucide-react";
+import { Plus, Trash2, Loader2, Upload, X, FileAudio, FileVideo } from "lucide-react";
 import { BLOCK_TYPES } from "@/lib/blocks";
 
 function MediaUpload({ value, onChange, accept = "image/*", label = "Upload image", kind = "image" }) {
@@ -65,6 +65,48 @@ function MediaUpload({ value, onChange, accept = "image/*", label = "Upload imag
         {value && (
           <p className="flex items-center gap-1.5 font-mono text-[11px] text-muted-foreground">
             <FileAudio className="h-3.5 w-3.5" /> Audio file ready
+          </p>
+        )}
+      </div>
+    );
+  }
+
+  if (kind === "video") {
+    return (
+      <div className="space-y-2">
+        <input ref={inputRef} type="file" accept={accept} className="hidden" onChange={handle} />
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={trigger}
+            disabled={uploading}
+            className="flex h-10 flex-1 items-center justify-center gap-2 rounded-lg border border-dashed border-border text-sm text-muted-foreground transition-colors hover:border-primary/50 hover:text-foreground"
+          >
+            {uploading ? (
+              <>
+                <Loader2 className="h-4 w-4 animate-spin" /> Uploading…
+              </>
+            ) : (
+              <>
+                <Upload className="h-4 w-4" /> {value ? "Replace video" : label}
+              </>
+            )}
+          </button>
+          {value && (
+            <Button
+              type="button"
+              variant="outline"
+              size="icon"
+              className="h-10 w-10 shrink-0"
+              onClick={() => onChange("")}
+            >
+              <X className="h-4 w-4" />
+            </Button>
+          )}
+        </div>
+        {value && (
+          <p className="flex items-center gap-1.5 font-mono text-[11px] text-muted-foreground">
+            <FileVideo className="h-3.5 w-3.5" /> Video file ready
           </p>
         )}
       </div>
@@ -254,6 +296,26 @@ function EmbedBlockEditor({ block, onChange }) {
   );
 }
 
+function VideoBlockEditor({ block, onChange }) {
+  return (
+    <div className="space-y-2">
+      <Label className="text-xs text-muted-foreground">Video</Label>
+      <MediaUpload
+        kind="video"
+        accept="video/mp4,video/webm,video/quicktime"
+        label="Upload video (MP4, WebM)"
+        value={block.url}
+        onChange={(url) => onChange({ ...block, url })}
+      />
+      <Input
+        value={block.caption || ""}
+        onChange={(e) => onChange({ ...block, caption: e.target.value })}
+        placeholder="Caption (optional)"
+      />
+    </div>
+  );
+}
+
 function MusicBlockEditor({ block, onChange }) {
   return (
     <div className="space-y-3">
@@ -295,6 +357,7 @@ const EDITORS = {
   text: TextBlockEditor,
   heading: HeadingBlockEditor,
   image: ImageBlockEditor,
+  video: VideoBlockEditor,
   link: LinkBlockEditor,
   list: ListBlockEditor,
   quote: QuoteBlockEditor,

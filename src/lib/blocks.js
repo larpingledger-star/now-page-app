@@ -5,6 +5,7 @@ export const BLOCK_TYPES = [
   { type: "link", label: "Link", description: "A titled link with a short description." },
   { type: "list", label: "List", description: "A bulleted list of items." },
   { type: "quote", label: "Quote", description: "A blockquote with optional attribution." },
+  { type: "video", label: "Video", description: "An uploaded video file (MP4, WebM, etc.)." },
   { type: "embed", label: "Embed", description: "An embedded video (YouTube, Vimeo, etc.)." },
   { type: "music", label: "Music", description: "An MP3 player with cover art, title, and artist." },
 ];
@@ -24,6 +25,8 @@ export function createBlock(type) {
     case "quote":
       return { type, content: "", attribution: "" };
     case "embed":
+      return { type, url: "", caption: "" };
+    case "video":
       return { type, url: "", caption: "" };
     case "music":
       return { type, title: "", artist: "", audio_url: "", cover_url: "" };

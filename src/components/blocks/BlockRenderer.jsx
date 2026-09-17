@@ -151,6 +151,26 @@ export default function BlockRenderer({ block, site }) {
         </blockquote>
       );
 
+    case "video":
+      if (!block.url) return null;
+      return (
+        <figure className={sizeClass || "max-w-[640px]"}>
+          <div className="w-full overflow-hidden rounded-lg border border-border/70 bg-card">
+            <video
+              src={block.url}
+              controls
+              className="w-full"
+              preload="metadata"
+            />
+          </div>
+          {block.caption && (
+            <figcaption className="mt-2.5 font-mono text-[12px] tracking-wide text-muted-foreground">
+              {block.caption}
+            </figcaption>
+          )}
+        </figure>
+      );
+
     case "embed":
       if (!block.url) return null;
       return (

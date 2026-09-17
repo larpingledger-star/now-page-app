@@ -16,7 +16,8 @@ uploadRoutes.post("/", authMiddleware, async (c) => {
     httpMetadata: { contentType: file.type },
   });
 
-  const url = `/api/files/${key}`;
+  const origin = new URL(c.req.url).origin;
+  const url = `${origin}/api/files/${key}`;
   return c.json({ file_url: url });
 });
 
@@ -24,8 +25,8 @@ uploadRoutes.post("/", authMiddleware, async (c) => {
 export const fileRoutes = new Hono<{ Bindings: Env }>();
 
 fileRoutes.get("/*", async (c) => {
-  const key = c.req.path.replace("/api/files/", "");
-  const object = await c.env.BUCKET.get(key);
+  const path = c.req.path.replace("/api/files/", "");
+  const object = await c.env.BUCKET.get(path);
   if (!object) return c.text("Not found", 404);
 
   const headers = new Headers();
