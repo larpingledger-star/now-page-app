@@ -2,7 +2,6 @@ import React, { useEffect } from "react";
 import { createPortal } from "react-dom";
 import { motion } from "framer-motion";
 import { X } from "lucide-react";
-import { Image as UIImage } from "@/components/ui/image";
 
 export default function Lightbox({ src, caption, onClose }) {
   useEffect(() => {
@@ -38,7 +37,11 @@ export default function Lightbox({ src, caption, onClose }) {
         className="flex h-[82vh] w-full max-w-[1100px] items-center justify-center"
         onClick={(e) => e.stopPropagation()}
       >
-        <UIImage src={src} alt={caption || ""} fittingType="fit" className="h-full w-full" />
+        <img
+          src={src}
+          alt={caption || ""}
+          className="max-h-full max-w-full object-contain"
+        />
       </motion.div>
       {caption && (
         <p className="absolute bottom-5 left-0 right-0 px-6 text-center font-mono text-[12px] tracking-wide text-white/70">

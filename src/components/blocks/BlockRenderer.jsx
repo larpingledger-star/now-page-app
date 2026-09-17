@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import ReactMarkdown from "react-markdown";
 import { AnimatePresence } from "framer-motion";
-import { Image as UIImage } from "@/components/ui/image";
 import { Link as LinkIcon, ExternalLink } from "lucide-react";
 import { normalizeEmbedUrl } from "@/lib/blocks";
 import MusicPlayer from "@/components/blocks/MusicPlayer";
@@ -31,12 +30,12 @@ function ImageBlock({ block, sizeClass }) {
         className="block w-full cursor-zoom-in rounded-lg text-left"
         aria-label="Open image fullscreen"
       >
-        <div className="aspect-[3/2] w-full overflow-hidden rounded-lg border border-border/70 bg-card shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
-          <UIImage
+        <div className="w-full overflow-hidden rounded-lg border border-border/70 bg-card shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
+          <img
             src={block.url}
             alt={block.caption || ""}
-            className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
-            fittingType="fill"
+            className="w-full max-h-[600px] object-contain transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+            loading="lazy"
           />
         </div>
       </button>
