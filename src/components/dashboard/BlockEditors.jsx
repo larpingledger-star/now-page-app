@@ -1,11 +1,12 @@
 import React, { useRef, useState } from "react";
+import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import db from '@/api/base44Client';
 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { Plus, Trash2, Loader2, Upload, X, FileAudio, FileVideo } from "lucide-react";
+import { Plus, Trash2, Loader2, Upload, X, FileAudio, FileVideo, GripVertical } from "lucide-react";
 import { BLOCK_TYPES } from "@/lib/blocks";
 
 function MediaUpload({ value, onChange, accept = "image/*", label = "Upload image", kind = "image" }) {
@@ -231,27 +232,59 @@ function ListBlockEditor({ block, onChange }) {
   const addItem = () => onChange({ ...block, items: [...items, ""] });
   const removeItem = (i) => onChange({ ...block, items: items.filter((_, idx) => idx !== i) });
 
+  const onDragEnd = (result) => {
+    if (!result.destination) return;
+    const next = [...items];
+    const [moved] = next.splice(result.source.index, 1);
+    next.splice(result.destination.index, 0, moved);
+    onChange({ ...block, items: next });
+  };
+
   return (
     <div className="space-y-2">
       <Label className="text-xs text-muted-foreground">List items</Label>
-      {items.map((item, i) => (
-        <div key={i} className="flex gap-2">
-          <Input
-            value={item}
-            onChange={(e) => setItem(i, e.target.value)}
-            placeholder={`Item ${i + 1}`}
-          />
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon"
-            onClick={() => removeItem(i)}
-            disabled={items.length <= 1}
-          >
-            <Trash2 className="h-4 w-4 text-muted-foreground" />
-          </Button>
-        </div>
-      ))}
+      <DragDropContext onDragEnd={onDragEnd}>
+        <Droppable droppableId="list-items">
+          {(provided) => (
+            <div ref={provided.innerRef} {...provided.droppableProps} className="space-y-2">
+              {items.map((item, i) => (
+                <Draggable key={i} draggableId={`item-${i}`} index={i}>
+                  {(p, snap) => (
+                    <div
+                      ref={p.innerRef}
+                      {...p.draggableProps}
+                      className={`flex gap-2 ${snap.isDragging ? "rounded-lg border border-primary/40 shadow-lg" : ""}`}
+                    >
+                      <div
+                        {...p.dragHandleProps}
+                        className="flex items-center text-muted-foreground/40 hover:text-muted-foreground cursor-grab active:cursor-grabbing"
+                      >
+                        <GripVertical className="h-4 w-4" />
+                      </div>
+                      <Input
+                        value={item}
+                        onChange={(e) => setItem(i, e.target.value)}
+                        placeholder={`Item ${i + 1}`}
+                        className="flex-1"
+                      />
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => removeItem(i)}
+                        disabled={items.length <= 1}
+                      >
+                        <Trash2 className="h-4 w-4 text-muted-foreground" />
+                      </Button>
+                    </div>
+                  )}
+                </Draggable>
+              ))}
+              {provided.placeholder}
+            </div>
+          )}
+        </Droppable>
+      </DragDropContext>
       <Button type="button" variant="outline" size="sm" onClick={addItem}>
         <Plus className="mr-1.5 h-3.5 w-3.5" /> Add item
       </Button>
