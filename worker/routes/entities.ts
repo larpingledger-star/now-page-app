@@ -41,6 +41,21 @@ entityRoutes.post("/Section", authMiddleware, adminMiddleware, async (c) => {
   return c.json(section);
 });
 
+// Admin: bulk update sections (reorder)
+entityRoutes.put("/Section/bulk", authMiddleware, adminMiddleware, async (c) => {
+  const items = await c.req.json<{ id: string; order?: number; enabled?: boolean }[]>();
+  const stmts = items.map((item) => {
+    const sets: string[] = [];
+    const vals: unknown[] = [];
+    if (item.order !== undefined) { sets.push("\"order\" = ?"); vals.push(item.order); }
+    if (item.enabled !== undefined) { sets.push("enabled = ?"); vals.push(item.enabled ? 1 : 0); }
+    vals.push(item.id);
+    return c.env.DB.prepare(`UPDATE sections SET ${sets.join(", ")} WHERE id = ?`).bind(...vals);
+  });
+  await c.env.DB.batch(stmts);
+  return c.json({ message: "Bulk update successful" });
+});
+
 // Admin: update section
 entityRoutes.put("/Section/:id", authMiddleware, adminMiddleware, async (c) => {
   const id = c.req.param("id");
@@ -58,21 +73,6 @@ entityRoutes.put("/Section/:id", authMiddleware, adminMiddleware, async (c) => {
   await c.env.DB.prepare(`UPDATE sections SET ${sets.join(", ")} WHERE id = ?`).bind(...vals).run();
   const section = await c.env.DB.prepare("SELECT * FROM sections WHERE id = ?").bind(id).first();
   return c.json(section);
-});
-
-// Admin: bulk update sections (reorder)
-entityRoutes.put("/Section/bulk", authMiddleware, adminMiddleware, async (c) => {
-  const items = await c.req.json<{ id: string; order?: number; enabled?: boolean }[]>();
-  const stmts = items.map((item) => {
-    const sets: string[] = [];
-    const vals: unknown[] = [];
-    if (item.order !== undefined) { sets.push("\"order\" = ?"); vals.push(item.order); }
-    if (item.enabled !== undefined) { sets.push("enabled = ?"); vals.push(item.enabled ? 1 : 0); }
-    vals.push(item.id);
-    return c.env.DB.prepare(`UPDATE sections SET ${sets.join(", ")} WHERE id = ?`).bind(...vals);
-  });
-  await c.env.DB.batch(stmts);
-  return c.json({ message: "Bulk update successful" });
 });
 
 // Admin: delete section

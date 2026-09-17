@@ -43,18 +43,25 @@ export default function Dashboard() {
 
   const addSection = async () => {
     try {
-      const order = (sections.length ? Math.max(...sections.map((s) => s.order ?? 0)) : -1) + 1;
       const created = await db.entities.Section.create({
         title: "New section",
         subtitle: "",
         kind: "custom",
-        order,
+        order: 0,
         enabled: true,
         blocks: [createBlock("text")],
       });
-      setSections((prev) =>
-        [...prev, created].sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
+      const bumped = sections.map((s) => ({ ...s, order: (s.order ?? 0) + 1 }));
+      setSections(
+        [created, ...bumped].sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
       );
+      if (bumped.length) {
+        try {
+          await db.entities.Section.bulkUpdate(bumped.map((s) => ({ id: s.id, order: s.order })));
+        } catch (e) {
+          console.error("Failed to bump existing sections:", e);
+        }
+      }
       setSelectedId(created.id);
       toast({ title: "Section created" });
     } catch (e) {
