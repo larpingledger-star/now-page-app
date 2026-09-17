@@ -1,0 +1,132 @@
+{
+  "name": "SiteSetting",
+  "type": "object",
+  "properties": {
+    "owner_name": {
+      "type": "string"
+    },
+    "location": {
+      "type": "string"
+    },
+    "hero_title": {
+      "type": "string"
+    },
+    "hero_intro": {
+      "type": "string"
+    },
+    "show_name": {
+      "type": "boolean",
+      "default": true
+    },
+    "show_location": {
+      "type": "boolean",
+      "default": true
+    },
+    "show_time": {
+      "type": "boolean",
+      "default": true
+    },
+    "show_kind": {
+      "type": "boolean",
+      "default": true
+    },
+    "theme_mode": {
+      "type": "string",
+      "enum": [
+        "light",
+        "dark",
+        "system"
+      ],
+      "default": "light"
+    },
+    "heading_font": {
+      "type": "string",
+      "default": "source-serif"
+    },
+    "body_font": {
+      "type": "string",
+      "default": "inter"
+    },
+    "font_size": {
+      "type": "string",
+      "enum": [
+        "compact",
+        "normal",
+        "large"
+      ],
+      "default": "normal"
+    },
+    "content_width": {
+      "type": "string",
+      "enum": [
+        "narrow",
+        "normal",
+        "wide"
+      ],
+      "default": "normal"
+    },
+    "corner_radius": {
+      "type": "string",
+      "enum": [
+        "sharp",
+        "soft",
+        "rounded"
+      ],
+      "default": "soft"
+    },
+    "spacing": {
+      "type": "string",
+      "enum": [
+        "compact",
+        "normal",
+        "relaxed"
+      ],
+      "default": "normal"
+    },
+    "image_size": {
+      "type": "string",
+      "enum": [
+        "small",
+        "normal",
+        "large",
+        "full"
+      ],
+      "default": "normal"
+    },
+    "link_style": {
+      "type": "string",
+      "enum": [
+        "card",
+        "plain"
+      ],
+      "default": "card"
+    },
+    "accent_color": {
+      "type": "string"
+    },
+    "background_color": {
+      "type": "string"
+    },
+    "text_color": {
+      "type": "string"
+    }
+  },
+  "rls": {
+    "read": {},
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

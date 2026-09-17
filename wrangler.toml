@@ -1,0 +1,20 @@
+name = "now-page-api"
+main = "worker/index.ts"
+compatibility_date = "2024-09-23"
+compatibility_flags = ["nodejs_compat"]
+
+[[d1_databases]]
+binding = "DB"
+database_name = "now-page-db"
+database_id = "56da6420-03a8-4807-b905-1935b50ff767"
+
+[[r2_buckets]]
+binding = "BUCKET"
+bucket_name = "now-page-uploads"
+
+[vars]
+JWT_SECRET = "CHANGE_ME_BEFORE_DEPLOY"
+CORS_ORIGIN = "*"
+
+[env.production]
+vars = { CORS_ORIGIN = "*" }
