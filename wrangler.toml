@@ -13,8 +13,7 @@ binding = "BUCKET"
 bucket_name = "now-page-uploads"
 
 [vars]
-JWT_SECRET = "CHANGE_ME_BEFORE_DEPLOY"
+JWT_SECRET = "bcbde5f680ea4b44395feebf714c7fc7994c588d98a9ea3cae4f11c5afb13621"
 CORS_ORIGIN = "*"
 
-[env.production]
-vars = { CORS_ORIGIN = "*" }
+
